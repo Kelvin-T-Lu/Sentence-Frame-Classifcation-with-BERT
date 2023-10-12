@@ -11,4 +11,9 @@ sklearn==0.0
 tokenizers
 ipython
 ipykernel
+jupyter
 pandas
+ipywidgets 
+widgetsnbextension 
+pandas-profiling
+google_trans_new
