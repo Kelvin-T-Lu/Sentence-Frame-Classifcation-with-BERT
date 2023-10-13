@@ -3,15 +3,16 @@
 # pip install googletrans==3.1.0a0
 # pip install google_trans_new
 
-import googletrans
-from googletrans import Translator
-
+# import google_trans_new
+# from google_trans_new import google_translator
+from deep_translator import GoogleTranslator
 # see available languages with the below
-print(googletrans.LANGUAGES)
+# print(google_trans_new.LANGUAGES)
 
 # Init
-translator = Translator()
+translator = GoogleTranslator(source='auto', target='fr')
 
 # Call to translate and get output
-output = translator.translate("I love natural language processing", src='en', dest='fr')
-print(output.text)
+output = translator.translate(
+    "I love natural language processing")
+print(output)
