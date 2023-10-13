@@ -16,4 +16,4 @@ pandas
 ipywidgets 
 widgetsnbextension 
 pandas-profiling
-google_trans_new
+deep_translator
