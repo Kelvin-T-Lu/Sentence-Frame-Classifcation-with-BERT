@@ -8,6 +8,7 @@
 from deep_translator import GoogleTranslator
 import pandas as pd
 from datetime import datetime
+from tqdm import tqdm
 # see available languages with the below
 # print(google_trans_new.LANGUAGES)
 
@@ -25,7 +26,7 @@ def reverse_translate(reverse_translator, text):
 def one_translate_cycle(target_lang, reverse_lang = "en"):
 
     # Orignial final_data frame.
-    og_df = pd.read_csv('./data/final_data_v2.csv')
+    og_df = pd.read_csv('./data/para_data.csv')
 
 
     translator = GoogleTranslator(source='auto', target=target_lang)
@@ -37,7 +38,8 @@ def one_translate_cycle(target_lang, reverse_lang = "en"):
     translate_df["sentence"] = translate_df["sentence"].apply(
         lambda sentence: apply_translate(translator, sentence))
     translate_df["language"] = target_lang
-    translate_df["transform"] = f"en,{target_lang}"
+    translate_df["transform"] = translate_df["transform"].apply(
+        lambda x: f"{x};{target_lang}")
     print(translate_df.head())
 
     # Reverse translation for paraphasing.
@@ -48,11 +50,11 @@ def one_translate_cycle(target_lang, reverse_lang = "en"):
         lambda sentence: reverse_translate(reverse_translator, sentence))
 
     reverse_translate_df["language"] = reverse_lang
-    translate_df["transform"] = f"en,{target_lang},en "
+    reverse_translate_df["transform"] = reverse_translate_df["transform"].apply(lambda x: f"{x};{target_lang};{reverse_lang}")
 
     # Output DF write
     augmented_df = pd.read_csv('./data/augmented_df.csv')
-    augmented_df["transform"] = "en"
+    # augmented_df["transform"] = "en"
     output_df = pd.concat([augmented_df, translate_df, reverse_translate_df],
                           axis=0, ignore_index=True)
     print(len(output_df))
@@ -62,12 +64,12 @@ def one_translate_cycle(target_lang, reverse_lang = "en"):
     print("writing ...")
     timestamp_str = datetime.now().strftime('%d-%m-%y-%H_%M')
     # output_df.to_csv(f"./data/augmented_df_{timestamp_str}.csv")
-    output_df.to_csv(f"./data/augmented_df.csv")
+    output_df.to_csv(f"./data/augmented_df.csv", index=False)
 
 def main():
 
-    target_lang = "zh-TW"
-    reverse_lang = "en"
+    # target_lang = "zh-TW"
+    # reverse_lang = "en"
 
 
     langs_dict = GoogleTranslator().get_supported_languages(as_dict=True)
@@ -78,12 +80,14 @@ def main():
 
     # Google translate acronym for langauges
     print("LANG CHOICES")
-    print(["en", "zh-TW", "hi", "te", "ne", "bn", "el", "de", "sw"])
+    print(["en", "zh-CN", "zh-TW", "hi", "te", "ne", "bn", "el", "de", "sw"])
 
-    lang_options = ["zh-TW", "hi", "te", "ne", "bn", "el", "de", "sw"]
+    lang_options = ["zh-TW", "zh-CN", "hi", "te", "ne", "bn", "el", "de", "sw"]
+    # lang_options = ["zh-CN"]
 
     
-    for lang in lang_options:
+    for i in tqdm(range(len(lang_options))):
+        lang = lang_options[i]
         print(f"Currently on {lang} cycle")
         one_translate_cycle(target_lang = lang, reverse_lang="en")
     # return
