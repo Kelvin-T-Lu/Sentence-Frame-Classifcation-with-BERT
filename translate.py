@@ -26,8 +26,8 @@ def reverse_translate(reverse_translator, text):
 def one_translate_cycle(target_lang, reverse_lang = "en"):
 
     # Orignial final_data frame.
-    # og_df = pd.read_csv('./data/para_data.csv')
-    og_df = pd.read_csv('./data/seed_para.csv')
+    og_df = pd.read_csv('./data/para_data.csv')
+    # og_df = pd.read_csv('./final_data_v2.csv')
 
 
     translator = GoogleTranslator(source= "en", target=target_lang)
@@ -54,7 +54,7 @@ def one_translate_cycle(target_lang, reverse_lang = "en"):
     reverse_translate_df["transform"] = reverse_translate_df["transform"].apply(lambda x: f"{x};{reverse_lang}")
 
     # Output DF write
-    augmented_df = pd.read_csv('./data/seed_augmented_df.csv')
+    augmented_df = pd.read_csv('./data/augmented_df.csv')
     # augmented_df["transform"] = "en"
     output_df = pd.concat([augmented_df, translate_df, reverse_translate_df],
                           axis=0, ignore_index=True)
@@ -65,7 +65,7 @@ def one_translate_cycle(target_lang, reverse_lang = "en"):
     print("writing ...")
     timestamp_str = datetime.now().strftime('%d-%m-%y-%H_%M')
     # output_df.to_csv(f"./data/augmented_df_{timestamp_str}.csv")
-    output_df.to_csv(f"./data/seed_augmented_df.csv", index=False)
+    output_df.to_csv(f"./data/augmented_df.csv", index=False)
 
 def main():
 
