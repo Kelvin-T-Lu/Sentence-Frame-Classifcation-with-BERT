@@ -9,7 +9,8 @@ import time
 import datetime
 
 def tokenize_and_format(sentences):
-  tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
+  tokenizer = BertTokenizer.from_pretrained(
+      'bert-base-multilingual-uncased', do_lower_case=True)
 
   # Tokenize all of the sentences and map the tokens to thier word IDs.
   input_ids = []
