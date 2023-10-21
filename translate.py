@@ -26,10 +26,11 @@ def reverse_translate(reverse_translator, text):
 def one_translate_cycle(target_lang, reverse_lang = "en"):
 
     # Orignial final_data frame.
-    og_df = pd.read_csv('./data/para_data.csv')
+    # og_df = pd.read_csv('./data/para_data.csv')
+    og_df = pd.read_csv('./data/seed_para.csv')
 
 
-    translator = GoogleTranslator(source='auto', target=target_lang)
+    translator = GoogleTranslator(source= "en", target=target_lang)
     reverse_translator = GoogleTranslator(source=target_lang, target=reverse_lang)
     
     # Apply initial translation.
@@ -50,10 +51,10 @@ def one_translate_cycle(target_lang, reverse_lang = "en"):
         lambda sentence: reverse_translate(reverse_translator, sentence))
 
     reverse_translate_df["language"] = reverse_lang
-    reverse_translate_df["transform"] = reverse_translate_df["transform"].apply(lambda x: f"{x};{target_lang};{reverse_lang}")
+    reverse_translate_df["transform"] = reverse_translate_df["transform"].apply(lambda x: f"{x};{reverse_lang}")
 
     # Output DF write
-    augmented_df = pd.read_csv('./data/augmented_df.csv')
+    augmented_df = pd.read_csv('./data/seed_augmented_df.csv')
     # augmented_df["transform"] = "en"
     output_df = pd.concat([augmented_df, translate_df, reverse_translate_df],
                           axis=0, ignore_index=True)
@@ -64,7 +65,7 @@ def one_translate_cycle(target_lang, reverse_lang = "en"):
     print("writing ...")
     timestamp_str = datetime.now().strftime('%d-%m-%y-%H_%M')
     # output_df.to_csv(f"./data/augmented_df_{timestamp_str}.csv")
-    output_df.to_csv(f"./data/augmented_df.csv", index=False)
+    output_df.to_csv(f"./data/seed_augmented_df.csv", index=False)
 
 def main():
 
@@ -82,14 +83,24 @@ def main():
     print("LANG CHOICES")
     print(["en", "zh-CN", "zh-TW", "hi", "te", "ne", "bn", "el", "de", "sw"])
 
-    lang_options = ["zh-TW", "zh-CN", "hi", "te", "ne", "bn", "el", "de", "sw"]
+    # lang_options = ["zh-CN", "ne", "hi", "te", "ne", "bn",
+                    # "el", "de", "sw", "ru", "tr", "it"]
+    # lang_options = ["ru", "tr", "it"]
     # lang_options = ["zh-CN"]
+    lang_options = ["it"]
 
     
     for i in tqdm(range(len(lang_options))):
         lang = lang_options[i]
-        print(f"Currently on {lang} cycle")
-        one_translate_cycle(target_lang = lang, reverse_lang="en")
+        try:
+            print(f"Currently on {lang} cycle")
+            one_translate_cycle(target_lang = lang, reverse_lang="en")
+        except Exception as e:
+            with open("error_logs.txt", "a") as f:
+                f.write(f"{lang} failed : {e}")
+            
+            continue
+
     # return
 
     
