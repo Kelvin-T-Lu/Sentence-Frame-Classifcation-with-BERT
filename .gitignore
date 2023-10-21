@@ -1,5 +1,6 @@
 /klu21_hw2_final
 /data
+/model_chkpts
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
